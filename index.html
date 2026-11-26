@@ -282,6 +282,29 @@ button{font:inherit;cursor:pointer}
 .gbar{display:flex;flex-direction:column;gap:3px}.gbar i{display:block;height:10px;border-radius:4px;width:calc(var(--w)*1%)}
 .hypo{background:var(--navy);border:none;color:#F4F7FB}.hypo .tl-kind{background:#E8A33D;color:var(--navy)}.hypo h3{color:#fff}.hypo p{font-size:16.5px;color:#C9D7EE;max-width:90ch}
 @media (max-width:900px){.speed{grid-template-columns:1fr}.t100{grid-template-columns:100px minmax(0,1fr) 78px}.gen{grid-template-columns:96px minmax(0,1fr) 86px}}
+.tl-item.has-detail .tl-body{cursor:pointer}
+.tl-item.has-detail .tl-body:hover{box-shadow:0 14px 30px rgba(13,38,80,.16)}
+.tl-more{align-self:flex-start;margin-top:8px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13.5px;font-weight:700;color:var(--blue);background:#E7EFFA;border:none;border-radius:999px;padding:6px 12px;cursor:pointer}
+.tl-more .play{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#E5322D;color:#fff;font-size:9px}
+.tl-more:focus-visible,.dm-close:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.dm{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(9,22,46,.62);backdrop-filter:blur(4px)}
+.dm.open{display:flex}
+.dm-panel{position:relative;width:min(760px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--paper);border-radius:24px;padding:26px 26px 24px;box-shadow:0 30px 80px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:12px}
+.dm-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:#E7EFFA;color:var(--navy);font-size:22px;font-weight:700;cursor:pointer}
+.dm .tl-body.dm-in{transform:none!important;opacity:1!important;max-width:none;width:100%;background:none!important;border:none!important;box-shadow:none!important;padding:0!important}
+.dm-body .av{width:100%;height:160px;max-height:160px;object-fit:cover;border-radius:16px}
+.dm-body h3{font-size:clamp(24px,3vw,34px);margin:4px 0}
+.dm-body p{font-size:17px}
+.dm-body .tl-more{display:none}
+.dm-shot img{width:100%;border-radius:14px;border:1px solid var(--line)}
+.dm-shot figcaption{font-size:13.5px;color:var(--ink-mute);margin-top:6px}
+.dm-panel > *{flex:none}
+.dm-video{position:relative;border-radius:16px;overflow:hidden;background:#0D2650;aspect-ratio:16/9}
+.dm-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.dm-video a{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff;text-decoration:none;font-weight:700;background:linear-gradient(0deg,rgba(9,22,46,.75),rgba(9,22,46,.25)) ,var(--thumb) center/cover}
+.dm-video a span.play{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:#E5322D;font-size:28px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.dm-links{display:flex;flex-wrap:wrap;gap:10px}
+.dm-links a{font-size:15px;font-weight:700;color:var(--blue);background:#E7EFFA;border-radius:999px;padding:8px 14px;text-decoration:none}
 .tl-news{align-self:center;position:relative;z-index:1;width:min(560px,100%);margin-top:10px;background:var(--card);border:2px solid var(--sky);border-radius:18px;padding:14px 18px;box-shadow:0 10px 24px rgba(13,38,80,.08)}
 .tl-news-h{font-family:var(--f-mono);font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
 .tl-news ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--ink-soft)}
@@ -872,6 +895,8 @@ Bryggan: Det som hände däremellan är samma sak som hänt med text, bilder och
   </div>
 </section>
 
+<div class="dm" id="dm" role="dialog" aria-modal="true" aria-labelledby="dmTitle"><div class="dm-panel"><button class="dm-close" id="dmClose" aria-label="Stäng">×</button><div class="dm-body" id="dmBody"></div><div class="dm-video" id="dmVideo" hidden></div><div class="dm-links" id="dmLinks"></div><div id="dmShot"></div></div></div>
+
 <!-- 5 DEMO -->
 <section class="flow blue on-dark" id="demo" data-chap="1" data-notes="Läs instruktionen högt. Tryck enter. Ta bort händerna från tangentbordet, synligt. Starta nedräkningen.
 Medan agenten jobbar (låt den jobba i tystnad mellan punkterna):
@@ -1298,6 +1323,43 @@ const MD=[
   md.insertAdjacentHTML('beforeend',h+'<p class="md-today">I dag · 26 november 2026</p>')})();
 function mdReveal(){const r=$('md').getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;const mark=innerHeight*.9;
   document.querySelectorAll('#md .md-chip').forEach(c=>{const t=c.getBoundingClientRect().top;c.style.setProperty('--q',ease(clamp((mark-t)/160)))})}
+
+/* timeline detail view */
+const TLD={
+ "ChatGPT":{src:[["OpenAI: Introducing ChatGPT","https://openai.com/index/chatgpt/"]]},
+ "AI styr en dator":{src:[["Anthropic: computer use","https://www.anthropic.com/news/3-5-models-and-computer-use"]]},
+ "Operator":{src:[["OpenAI: Introducing Operator","https://openai.com/index/introducing-operator/"]]},
+ "Agenter i ChatGPT":{src:[["OpenAI: Introducing ChatGPT agent","https://openai.com/index/introducing-chatgpt-agent/"]]},
+ "ChatGPT personal finance":{yt:"ksfHQLmV-Fg",ytt:"Personal Finance in ChatGPT (OpenAI)",src:[["TechCrunch, 15 maj 2026","https://techcrunch.com/2026/05/15/openai-launches-chatgpt-for-personal-finance-will-let-you-connect-bank-accounts/"]]},
+ "Muse":{yt:"We8BTITLvb4",ytt:"Introducing Muse: your personal AI agent (Meta)",src:[["TechCrunch: 10 miljoner på 40 dagar","https://techcrunch.com/2026/10/20/metas-muse-hits-10m-u-s-downloads-in-40-days-a-milestone-reached-by-only-11-other-apps/"],["TechCrunch: Muse mot ChatGPT","https://techcrunch.com/2026/09/21/metas-muse-is-outpacing-chatgpts-early-mobile-launch/"]]},
+ "Ray-Ban Meta Audio":{src:[["Android Headlines, 13 okt 2026","https://www.androidheadlines.com/2026/10/ray-ban-meta-audio-is-out-now-and-it-ditches-the-one-thing-people-hated.html"]]},
+ "ChatGPT i Chrome":{src:[["Android Authority","https://www.androidauthority.com/chatgpt-extension-google-chrome-integration-3724838/"]]},
+ "Claude Duet":{src:[["MacRumors, 21 okt 2026","https://www.macrumors.com/2026/10/21/anthropic-claude-duet/"]]},
+ "”Dela inte inloggningen med din agent”":{src:[["TechCrunch, 27 okt 2026","https://techcrunch.com/2026/10/27/bank-of-america-kindly-asks-that-you-dont-share-your-banking-password-with-your-ai-assistant/"]]},
+ "Claude Personal Finance":{yt:"UTubvRLX2j4",ytt:"Claude Personal Finance (Anthropic)",src:[["TechCrunch, 5 nov 2026","https://techcrunch.com/2026/11/05/claude-can-now-analyze-your-spending-with-its-new-personal-finance-tool/"]]},
+ "ChatGPT Wallet":{src:[["TechCrunch, 13 nov 2026","https://techcrunch.com/2026/11/13/chatgpts-new-wallet-lets-ai-agents-shop-and-check-out-for-you/"]]},
+ "Google Wallet i Gemini":{src:[["Superpower Daily, 13 nov 2026","https://superpowerdaily.com/posts/google-connects-wallet-to-gemini-for-spending-insights-but-not-money-transfers"]]},
+ "Agentköp kommer till Europa":{src:[["Visa via EuropaWire, 18 nov 2026","https://news.europawire.eu/visa-brings-more-than-85-european-payment-acceptance-participants-into-ai-commerce-programme/eu-press-release/2026/11/18/16/50/04/188484/"]]},
+ "Muse Charm":{src:[["9to5Mac om Meta Connect","https://9to5mac.com/2026/09/23/meta-announces-camera-free-glasses-dedicated-muse-ai-gadget-more/"]]},
+ "OpenAI:s första enhet":{src:[["Android Headlines","https://www.androidheadlines.com/2026/01/openai-first-device-jony-ive-launch-2026-sweetpea.html"]]}
+};
+(function(){const dm=$('dm');let last=null;const canEmbed=/github\.io$|^localhost$|^127\./.test(location.hostname)||location.protocol==='file:';
+ function open(item){const body=item.querySelector('.tl-body'),h=body.querySelector('h3').textContent.trim(),d=TLD[h]||{};
+  const b=body.cloneNode(true);b.querySelectorAll('.tl-more').forEach(x=>x.remove());b.removeAttribute('style');b.classList.add('dm-in');
+  const t=b.querySelector('h3');t.id='dmTitle';
+  $('dmBody').innerHTML=b.outerHTML;const shot=item.querySelector('.tl-shot');$('dmShot').innerHTML=shot?'<figure class="dm-shot">'+shot.innerHTML+'</figure>':'';
+  const v=$('dmVideo');if(d.yt){v.hidden=false;const w='https://www.youtube.com/watch?v='+d.yt;
+   v.innerHTML=canEmbed?'<iframe src="https://www.youtube-nocookie.com/embed/'+d.yt+'" title="'+(d.ytt||'Video')+'" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>':'<a href="'+w+'" target="_blank" rel="noopener" style="--thumb:url(https://i.ytimg.com/vi/'+d.yt+'/hqdefault.jpg)"><span class="play">▶</span><span>Spela klippet på YouTube</span></a>'}
+  else{v.hidden=true;v.innerHTML=''}
+  $('dmLinks').innerHTML=(d.yt?'<a href="https://www.youtube.com/watch?v='+d.yt+'" target="_blank" rel="noopener">▶ '+(d.ytt||'Klippet på YouTube')+'</a>':'')+(d.src||[]).map(([n,u])=>'<a href="'+u+'" target="_blank" rel="noopener">'+n+' ↗</a>').join('');
+  last=document.activeElement;dm.classList.add('open');document.body.style.overflow='hidden';$('dmClose').focus()}
+ function close(){dm.classList.remove('open');$('dmVideo').innerHTML='';document.body.style.overflow='';if(last)last.focus()}
+ $('dmClose').onclick=close;dm.addEventListener('click',e=>{if(e.target===dm)close()});
+ addEventListener('keydown',e=>{if(e.key==='Escape'&&dm.classList.contains('open'))close()});
+ document.querySelectorAll('#tl .tl-item').forEach(item=>{const body=item.querySelector('.tl-body');if(!body)return;const h=body.querySelector('h3').textContent.trim(),d=TLD[h]||{};
+  item.classList.add('has-detail');const btn=document.createElement('button');btn.className='tl-more';btn.type='button';
+  btn.innerHTML=(d.yt?'<span class="play">▶</span>Se klippet och läs mer':'Läs mer')+' ›';btn.setAttribute('aria-label','Mer om '+h);
+  body.appendChild(btn);body.addEventListener('click',e=>{if(e.target.closest('a'))return;open(item)})})})();
 
 /* museum counter */
 let museDone=false;
